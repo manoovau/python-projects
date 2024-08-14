@@ -1,6 +1,8 @@
-with open("rooms.txt","r") as file:
+with open("rooms_4.txt","r") as file:
     file = file.read()
 
+file = file + (file[-1])
+# it crashes on concave rooms
 # Replace all type of walls for same character.
 floor_plan = file.replace("-+-", "-=-")
 floor_plan = floor_plan.replace("-+ ", "-| ")
@@ -12,7 +14,7 @@ floor_plan = floor_plan.replace("-+", "-|")
 floor_plan = floor_plan.replace("+", "|")
 floor_plan = (floor_plan[1:-1].split(") (")[0]).split("\n")
 
-print("total")
+print("total:")
 print("W: " + str(file.count("W")) + ", P: " + str(file.count("P")) + ", S: " + str(file.count("S")) + ", C: " + str(file.count("C")))
 
 class Characters:
@@ -95,7 +97,6 @@ for item in floor_plan:
 
         while walls - 1 > 0 and characters_total > 0:
             range_room = item[start:end + 1]
-
             if line_cha.W > 0:
                 w_result = range_room.count("W")
                 line_cha.W -= w_result
@@ -140,7 +141,7 @@ for item in floor_plan:
                         index_close = range_room.find("=", 1)
                     close_cha_index = start + index_close
 
-                    if floor_plan[i + 1][cha_index] == " " and floor_plan[i + 1][cha_index + 1] == " " and floor_plan[i + 1][cha_index - 1] == " ":
+                    if i + 1 < 50 and floor_plan[i + 1][cha_index] == " " and floor_plan[i + 1][cha_index + 1] == " " and floor_plan[i + 1][cha_index - 1] == " ":
                         for index, room in enumerate(room_list):
                             if room["range_end"] == start:
                                 end = close_cha_index
@@ -211,6 +212,14 @@ for room in room_list:
     result.append(room)
 
 result.sort(key=lambda x: x["name_tag"], reverse=False)
+
+filtered_list = [item for item in result if item["name_tag"] == 0]
+
+if (len(filtered_list) != 0): 
+    for item in filtered_list:
+        remove_index = result.index(item)
+        result.pop(remove_index)
+
 for item in result:
     print(item["name_tag"] + ":")
     print("W: " + str(item["W"]) + ", P: " + str(item["P"]) + ", S: " + str(item["S"]) + ", C: " + str(item["C"]))
